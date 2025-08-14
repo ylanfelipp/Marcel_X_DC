@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Login</title>
+    <script src="./js/models/modelLogin.js"></script>
+    <script src="./js/views/viewLogin.js"></script>
+    <script src="./js/controllers/controllerLogin.js"></script>
+    <link rel="stylesheet" href="./css/login.css">       
+</head>
+<body>
+
+<header>
+    <h1>Cadastro de Login</h1>
+</header>
+
+<div class="login-container">
+    <h2>Entrar</h2>
+    <input type="text" id="usuarioLogin" placeholder="Usuário">
+    <input type="password" id="senhaLogin" placeholder="Senha">
+    <button onclick="LoginController.abrirLogin()">Entrar</button>
+    <button onclick="criarLogin()">Criar Login</button>
+    <p id="mensagemLogin"></p>
+</div>
+
+<footer id="rodape">
+    <p>&copy; 2025 - Meu Site</p>
+</footer>
+
+<script>
+
+function criarLogin() {
+    window.location.href = 'criarLogin.html';
+}
+
+</script>
+
+</body>
+</html>

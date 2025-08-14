@@ -157,46 +157,50 @@ function montaHTML(){ //********************************************************
     }else{
         document.getElementById("log").innerHTML = `Bem-vindo, ${localStorage.getItem('loginAutenticado')}`
     }
-}  //********************************************************** */
+}  
+//********************************************************** */
 
-function criaLogin(){
-    if(localStorage.usrArr){
-        usr = JSON.parse(localStorage.getItem('usrArr')) //JSON - Javascript Object Notation: podem ser representados em forma de String e utilizaos em outas linguagens.
-    }
-    if(localStorage.snhArr){
-        snh = JSON.parse(localStorage.getItem('snhArr'))
-    }
-    let novoUsr = prompt("login:")
-    usr.push(novoUsr)
-    localStorage.usrArr = JSON.stringify(usr)
-    let novaSnh = prompt("senha:")
-    snh.push(novaSnh)
-    localStorage.snhArr = JSON.stringify(snh)
-    if(usr.includes(novoUsr) && snh.includes(novaSnh)){
-        alert("Login criado com sucesso!")
-    }else{
-        alert("Login não pode ser criado!")
+function atualizaBotaoLogin() {
+    const botao = document.getElementById("clog");
+    const loginAut = localStorage.getItem('loginAutenticado');
+
+    if (loginAut && loginAut !== "null" && loginAut !== "undefined") {
+        // Usuário logado
+        botao.textContent = `Bem-vindo, ${loginAut}`;
+        botao.onclick = function() {
+            // Mostra o modal
+            document.getElementById("logoutModal").style.display = "flex";
+        }
+
+        // Botão "Sim" do modal
+        document.getElementById("btnSair").onclick = function() {
+            localStorage.removeItem('loginAutenticado');
+            document.getElementById("logoutModal").style.display = "none";
+            botao.textContent = "Fazer login";
+            botao.onclick = fazerLogin;
+        }
+
+        // Botão "Cancelar" do modal
+        document.getElementById("btnCancelar").onclick = function() {
+            document.getElementById("logoutModal").style.display = "none";
+        }
+    } else {
+        botao.textContent = "Fazer login";
+        botao.onclick = fazerLogin;
     }
 }
 
-function abreTelaLogin(){
-    if(localStorage.usrArr){
-        usr = JSON.parse(localStorage.getItem('usrArr'))
-    }
-    if(localStorage.snhArr){
-        snh = JSON.parse(localStorage.getItem('snhArr'))
-    }
-    login = prompt("login:")
-    senha =  prompt("senha:")
-    let indUsr = usr.indexOf(login)
-    if(usr[indUsr] == login && snh[indUsr] == senha){
-        localStorage.setItem('loginAutenticado', login)
-        loginAut = localStorage.getItem('loginAutenticado')
-        document.getElementById("log").innerHTML = `Bem-vindo, ${loginAut}`
-    }else{
-        alert("Digite um usuário/senha válidos!\nOu crie um login no link ao lado")
-    }
+// Função original
+function fazerLogin() {
+    window.location.href = "login.html";
 }
+
+// Atualiza botão ao carregar a página
+window.onload = function() {
+    atualizaBotaoLogin();
+    montaHTML(); // sua função que monta os produtos
+}
+//********************************************************** */
 
 function compra(qtdId, produt, posArr){
     if(localStorage.posArr){
@@ -226,39 +230,7 @@ function abreLink(posArr){
 }
 
 function calculaCesta(){
-    usr = JSON.parse(localStorage.getItem('usrArr'))
-    loginAut = localStorage.getItem('loginAutenticado')
-    if(usr.includes(loginAut)){
-        let textoCarrinho = ''
-        for(i in qtd){
-            if(qtd[i] > 0){
-                totalGeral += totalCompra[i]
-                textoCarrinho += qtd[i] + " x " + preco[i].toFixed(2).replace('.', ',') + " - Boneco " + produto[i] + " R$ " + totalCompra[i].toFixed(2).replace('.', ',') + "\n"
-            }
-        }
-        if(totalGeral > 0){ //Apenas se houver alguma quantidade no carrinho
-            alert(`${textoCarrinho}
-                _______________________________________________________________
-                Total da compra                            R$ ${totalGeral.toFixed(2).replace('.', ',')}
-                        `)// parou aqui
-            let text = "Confirme ou cancele sua compra!\nPressione OK para comprar ou Cancelar para desistir da compra.";
-            if (confirm(text) == true) {
-                alert("Compra efetuada com sucesso!");
-                for(i in qtd){
-                    qtd[i] = 0
-                }
-                localStorage.qtdArr = JSON.stringify(qtd)
-                window.location.reload()
-            } else {
-                alert("Sua compra não foi realizada!");
-                totalGeral = 0
-            }
-        }else{
-            alert("Seu carrinho está vazio!")
-        }
-    }else{
-        alert("Você não está logado!")
-    }
+    window.location.href = "carrinho.html"
 }
 /***************************************************************************** */
 function carregaProduto(){

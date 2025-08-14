@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Login</title>
+    <script src="./js/models/"></script>
+    <script src="./js/views/viewLogin.js"></script>
+    <script src="./js/controllers/controllerLogin.js"></script>
+    <link rel="stylesheet" href="./css/criarLoginStyles.css">       
+</head>
+<body>
+
+<header>
+    <h1>Cadastro de Login</h1>
+</header>
+
+<div class="login-container">
+    <h2>Criar Conta</h2>
+    <input type="text" id="novoUsuario" placeholder="Usuário">
+    <input type="password" id="novaSenha" placeholder="Senha">
+    <button onclick="LoginController.criarLogin()">Cadastrar</button>
+    <p id="mensagem"></p>
+</div>
+
+
+<footer id="rodape">
+    <p>&copy; 2025 - Meu Site</p>
+</footer>
+
+</body>
+</html>
