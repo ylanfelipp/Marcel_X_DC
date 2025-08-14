@@ -1,10 +1,14 @@
 import ProdutoController from "./controllers/ProdutoController"
 import Produto from "./models/Produto"
+import { produtos } from "./database/produtos"
 
 let login = '', senha, qtdCont = 0, valor = 0, totalGeral = 0, cesta, loginAut
 let article, div, div2, h3, p1, input, p2, span, aLink, main, section, footer, h2, p3, span2, aLink2
-let usr = []
-let snh = []
+
+let totalCompra = []
+if(localStorage.totCompArr){
+    totalCompra = JSON.parse(localStorage.getItem('totCompArr'))
+}
 
 function getDados(){
     let prod = document.getElementById('produto').value    
@@ -13,7 +17,7 @@ function getDados(){
     let prec = document.getElementById('preco').value
     let lnk = document.getElementById('linkAmazon').value
 
-    let produto = new Produto(codig, prod, prec, lnk, descri)
+    const produto = new Produto(codig, prod, prec, lnk, descri)
     ProdutoController.criarProduto(produto)
 
     document.getElementById('preco').value = ''
@@ -32,19 +36,19 @@ function montaHTML(){ //********************************************************
     section = document.createElement('section')
     section.setAttribute('class', 'products-container')
     main.append(section)
-    for(i in produto){
+    for(let produto of produtos){
         article = document.createElement('article')
         article.setAttribute('class', 'card')
         section.append(article)
         div = document.createElement('div')
         div.setAttribute('class', 'product-image')
-        div.setAttribute('id', 'img-' + i)
+        div.setAttribute('id', 'img-' + produto.link)
         div.setAttribute('onclick', "abreLink(" + i + ")")
         article.append(div)
-        document.getElementById('img-' + i).style.backgroundImage = 'url(imagens/img' + i + '.jpg)'
+        document.getElementById('img-' + i).style.backgroundImage = 'url(imagens/img' + produto.link + '.jpg)'
         h3 = document.createElement('h3')
-        h3.setAttribute('id', 'nome' + i)
-        h3.innerHTML = produto[i]
+        h3.setAttribute('id', 'nome' + produto.link)
+        h3.innerHTML = produto.nome
         article.append(h3)
         p1 = document.createElement('p')
         p1.innerHTML = 'Qtd: '
@@ -55,21 +59,21 @@ function montaHTML(){ //********************************************************
         input.setAttribute('min', '1')
         input.setAttribute('max', '10')
         input.setAttribute('hidden', 'true')
-        input.setAttribute('id', 'qtd-' + i)
+        input.setAttribute('id', 'qtd-' + produto.quantidade)
         p1.append(input)
         article.append(p1)
         p2 = document.createElement('p')
         p2.innerHTML = 'R$ '
         span = document.createElement('span')
-        span.setAttribute('id', cod[i])
+        span.setAttribute('id', produto.cod)
         span.setAttribute('class', 'bold')
-        span.innerHTML = preco[i].toFixed(2).replace('.', ',')
+        span.innerHTML = produto.preco.toString().toFixed(2).replace('.', ',')
         p2.append(span)
         article.append(p2)
         aLink = document.createElement('a')
-        aLink.setAttribute('onclick', "compra(" + "'" + 'qtd-' + i + "'" + ',' + "'" + cod[i] + "'"  +  ',' + i + ")")
+        aLink.setAttribute('onclick', "compra(" + "'" + 'qtd-' + i + "'" + ',' + "'" + produto.cod + "'"  +  ',' + produto.cod + ")")
         aLink.setAttribute('class', 'btn')
-        aLink.setAttribute('href', 'http://www.amazon.com.br/' + link[i])
+        aLink.setAttribute('href', 'http://www.amazon.com.br/' + produto.link)
         aLink.setAttribute('target', '_blank')
         aLink.innerHTML = 'Comprar'
     }
@@ -144,11 +148,10 @@ function compra(qtdId, produt, posArr){
     }else{
         localStorage.posArr = JSON.stringify(qtd)
     }
-    totalCompra[posArr] = qtd[posArr] * parseFloat(document.getElementById(produt).innerText.replace(",", "."))
-    localStorage.qtdArr = JSON.stringify(qtd)
+    totalCompra[posArr] = produtos[posArr].getTotalCompra()
     localStorage.totCompArr = JSON.stringify(totalCompra)
-    localStorage.setItem('produtoIndividual', produto[posArr])
-    localStorage.setItem('descricaoIndividual', descricao[posArr])
+    localStorage.setItem('produtoIndividual', produtos[posArr].nome)
+    localStorage.setItem('descricaoIndividual', produtos[posArr].descricao)
     let url_atual = window.location.href
     if(url_atual != "http://127.0.0.1:5500/produto.html" && url_atual != "http://127.0.0.1:5500/produto.html#"){
         window.location.href = "/produto.html"
@@ -157,8 +160,8 @@ function compra(qtdId, produt, posArr){
 }
 
 function abreLink(posArr){
-    localStorage.setItem('produtoIndividual', produto[posArr])
-    localStorage.setItem('descricaoIndividual', descricao[posArr])
+    localStorage.setItem('produtoIndividual', produtos[posArr].nome)
+    localStorage.setItem('descricaoIndividual', produtos[posArr].descricao)
     let url_atual = window.location.href
     if(url_atual != "http://127.0.0.1:5500/produto.html" && url_atual != "http://127.0.0.1:5500/produto.html#"){
         window.location.href = "/produto.html"
