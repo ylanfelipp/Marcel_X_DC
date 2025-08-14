@@ -1,8 +1,9 @@
-import { produtos } from "../database/produtos"
+import { produtos, salvarProdutos } from "../database/produtos"
 
 class ProdutoController {
-    static criarProduto(produto) {
+    static adicionarProduto(produto) {
         produtos.push(produto)
+        salvarProdutos()
     }
 }
 
