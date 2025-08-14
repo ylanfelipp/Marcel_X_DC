@@ -7,17 +7,24 @@
     <link rel="stylesheet" href="css/styles.css">
     <script src="js/script.js" defer></script>
 </head>
-<!--**************************************** -->
 <body onload="montaHTML()">
-<!--**************************************** -->
+
     <header>
         <div id="hcont">
-            <button onclick="criaLogin()" id="clog">crie seu login</button>
-            <button onclick="abreTelaLogin()" id="log">Login</button>
+            <button onclick="fazerLogin()" id="clog">Fazer login</button>
             <h1>Loja dos Nerds <br> Vingadores x Liga da Justiça</h1>
             <a onclick="calculaCesta()" class="car" href="#">Compras<img src="imagens/carrinho.png" alt="Carrinho de compras"></a>
         </div>
     </header>
+
+    <!-- Modal de Logout -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <p>Deseja deslogar?</p>
+            <button id="btnSair">Sim</button>
+            <button id="btnCancelar">Cancelar</button>
+        </div>
+    </div>
 
 </body>
 </html>

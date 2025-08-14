@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho de Compras</title>
+    <link rel="stylesheet" href="css/carrinhoStyles.css">
+    <script src="js/models/modelCarrinho.js" defer></script>
+    <script src="js/views/viewCarrinho.js" defer></script>
+    <script src="js/controllers/controllerCarrinho.js" defer></script>
+</head>
+<body onload="CarrinhoController.init()">
+
+<header>
+    <h1>Meu Carrinho</h1>
+    <a href="index.html">Voltar à Loja</a>
+</header>
+
+<main id="carrinho-container">
+    <!-- Produtos aparecem aqui -->
+</main>
+
+<footer>
+    <p>Total: R$ <span id="totalGeral">0,00</span></p>
+    <button onclick="CarrinhoController.finalizarCompra()">Finalizar Compra</button>
+</footer>
+
+</body>
+</html>
