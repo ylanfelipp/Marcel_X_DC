@@ -1,26 +1,30 @@
-const CarrinhoView = {
-    renderizarCarrinho(){
+import CarrinhoController from "../controllers/CarrinhoController";
+import { carrinho } from "../database/carrinho";
+
+export const CarrinhoView = {
+    renderizarCarrinho() {
         const container = document.getElementById('carrinho-container');
         container.innerHTML = '';
 
         let temProdutos = false;
 
-        for(let i in CarrinhoModel.qtd){
-            if(CarrinhoModel.qtd[i] > 0){
+        for(let produto of carrinho){
+            if(produto.quantidade > 0){
                 temProdutos = true;
                 const item = document.createElement('div');
                 item.classList.add('item-carrinho');
                 item.innerHTML = `
-                    <p><strong>${CarrinhoModel.qtd[i]}x</strong> ${CarrinhoModel.produto[i]}</p>
-                    <p>Preço unitário: R$ ${CarrinhoModel.preco[i].toFixed(2).replace('.', ',')}</p>
-                    <p>Total: R$ ${CarrinhoModel.totalCompra[i].toFixed(2).replace('.', ',')}</p>
+                    <p><strong>${produto.quantidade}x</strong> ${produto.nome}</p>
+                    <p>Preço unitário: R$ ${produto.preco.toString().toFixed(2).replace('.', ',')}</p>
+                    <p>Total: R$ ${produto.getTotalCompra().toFixed(2).replace('.', ',')}</p>
                 `;
                 container.appendChild(item);
             }
         }
 
-        document.getElementById('totalGeral').textContent = 
-            CarrinhoModel.calcularTotalGeral().toFixed(2).replace('.', ',');
+        document.getElementById('totalGeral').textContent = carrinho.reduce((acc, curr) => {
+            return acc + curr
+        }, 0).toString().replace('.', ',')
 
         if(!temProdutos){
             container.innerHTML = '<p>Seu carrinho está vazio!</p>';
@@ -28,11 +32,12 @@ const CarrinhoView = {
     },
 
     confirmarCompra(){
-        return confirm("Confirme ou cancele sua compra!\nPressione OK para comprar ou Cancelar para desistir.");
+        confirm("Confirme ou cancele sua compra!\nPressione OK para comprar ou Cancelar para desistir.");
     },
-
+    
     alertCompraSucesso(){
         alert("Compra efetuada com sucesso!");
+        CarrinhoController.limparCarrinho()
     },
 
     alertCompraCancelada(){

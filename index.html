@@ -5,15 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marvel x DC</title>
     <link rel="stylesheet" href="css/styles.css">
-    <script src="js/script.js" defer></script>
+    <script src="./js/script.js"  type="module" defer></script>
 </head>
 <body onload="montaHTML()">
 
     <header>
         <div id="hcont">
-            <button onclick="fazerLogin()" id="clog">Fazer login</button>
+            <button id="log">
+                <a href="./login.html">Fazer login</a>
+            </button>
             <h1>Loja dos Nerds <br> Vingadores x Liga da Justiça</h1>
-            <a onclick="calculaCesta()" class="car" href="#">Compras<img src="imagens/carrinho.png" alt="Carrinho de compras"></a>
+            <a onclick="calculaCesta()" class="car" href="/carrinho.html">Compras<img src="imagens/carrinho.png" alt="Carrinho de compras"></a>
         </div>
     </header>
 

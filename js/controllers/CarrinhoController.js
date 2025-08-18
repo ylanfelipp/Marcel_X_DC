@@ -1,9 +1,22 @@
-const CarrinhoController = {
-    init(){
-        CarrinhoView.renderizarCarrinho();
-    },
+import { carrinho, salvarCarrinho } from "../database/carrinho";
+import { CarrinhoView } from "../views/viewCarrinho"
 
-    finalizarCompra(){
+class CarrinhoController {
+    static init() {
+        CarrinhoView.renderizarCarrinho();
+    }
+
+    static adicionarProdutoCarrinho(produto) {
+        carrinho.push(produto)
+        salvarCarrinho()
+    }
+
+    static limparCarrinho() {
+        carrinho = []
+        salvarCarrinho()
+    }
+
+    static finalizarCompra(){
         const usr = JSON.parse(localStorage.getItem('usrArr')) || [];
         const loginAut = localStorage.getItem('loginAutenticado');
 
@@ -23,4 +36,6 @@ const CarrinhoController = {
             CarrinhoView.alertUsuarioNaoLogado();
         }
     }
-};
+}
+
+export default CarrinhoController

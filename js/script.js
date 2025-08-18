@@ -1,85 +1,26 @@
+import ProdutoController from "./controllers/ProdutoController"
+import CarrinhoController from "./controllers/CarrinhoController"
+import Produto from "./models/Produto"
+import { produtos, salvarProdutos } from "./database/produtos"
+import LoginController from "./controllers/LoginController"
+
 let login = '', senha, qtdCont = 0, valor = 0, totalGeral = 0, cesta, loginAut
 let article, div, div2, h3, p1, input, p2, span, aLink, main, section, footer, h2, p3, span2, aLink2
-let usr = []
-let snh = []
-let produto = []
-if(localStorage.prodArr){
-    produto = JSON.parse(localStorage.getItem('prodArr'))
-}
-let cod = []
-if(localStorage.codArr){
-    cod = JSON.parse(localStorage.getItem('codArr'))
-}
-let preco = []
-if(localStorage.precoArr){
-    preco = JSON.parse(localStorage.getItem('precoArr'))
-}
-let link = []
-if(localStorage.linkArr){
-    link = JSON.parse(localStorage.getItem('linkArr'))
-}
-let descricao = []
-if(localStorage.descArr){
-    descricao = JSON.parse(localStorage.getItem('descArr'))
-}
-let qtd = []
-if(localStorage.qtdArr){
-    qtd = JSON.parse(localStorage.getItem('qtdArr'))
-}
-let totalCompra = []
-if(localStorage.totCompArr){
-    totalCompra = JSON.parse(localStorage.getItem('totCompArr'))
-}
 
 function getDados(){
-    if(localStorage.qtdArr){
-        qtd = JSON.parse(localStorage.getItem('qtdArr'))
-    }
-    //qtd.push(0)
-    localStorage.qtdArr = JSON.stringify(qtd)
-    if(localStorage.totCompArr){
-        totalCompra = JSON.parse(localStorage.getItem('totCompArr'))
-    }
-    //totalCompra.push(0)
-    localStorage.totCompArr = JSON.stringify(totalCompra)
-    if(localStorage.prodArr){
-        produto = JSON.parse(localStorage.getItem('prodArr'))
-    }
-    let prod = document.getElementById('produto').value
-    produto.push(prod)
-    localStorage.prodArr = JSON.stringify(produto)
-    document.getElementById('produto').value = ''
-
-    if(localStorage.descArr){
-        descricao = JSON.parse(localStorage.getItem('descArr'))
-    }
+    let prod = document.getElementById('produto').value    
     let descri = document.getElementById('descricao').value
-    descricao.push(descri)
-    localStorage.descArr = JSON.stringify(descricao)
-    document.getElementById('descricao').value = ''
-
-    if(localStorage.codArr){
-        cod = JSON.parse(localStorage.getItem('codArr'))
-    }
     let codig = document.getElementById('codigo').value
-    cod.push(codig)
-    localStorage.codArr = JSON.stringify(cod)
-    document.getElementById('codigo').value = ''
-
-    if(localStorage.precoArr){
-        preco = JSON.parse(localStorage.getItem('precoArr'))
-    }
     let prec = document.getElementById('preco').value
-    preco.push(parseFloat(prec.replace(',' , '.')))
-    localStorage.precoArr = JSON.stringify(preco)
-    document.getElementById('preco').value = ''
-
-    if(localStorage.linkArr){
-        link = JSON.parse(localStorage.getItem('linkArr'))
-    }
     let lnk = document.getElementById('linkAmazon').value
-    link.push(lnk)
-    localStorage.linkArr = JSON.stringify(link)
+
+    const produto = new Produto(codig, prod, prec, lnk, descri)
+    ProdutoController.adicionarProduto(produto)
+
+    document.getElementById('preco').value = ''
+    document.getElementById('codigo').value = ''
+    document.getElementById('produto').value = ''
+    document.getElementById('descricao').value = ''
     document.getElementById('linkAmazon').value = ''
 
     alert("Dados inseridos com Sucesso!")
@@ -92,19 +33,19 @@ function montaHTML(){ //********************************************************
     section = document.createElement('section')
     section.setAttribute('class', 'products-container')
     main.append(section)
-    for(i in produto){
+    for(let produto of produtos){
         article = document.createElement('article')
         article.setAttribute('class', 'card')
         section.append(article)
         div = document.createElement('div')
         div.setAttribute('class', 'product-image')
-        div.setAttribute('id', 'img-' + i)
+        div.setAttribute('id', 'img-' + produto.link)
         div.setAttribute('onclick', "abreLink(" + i + ")")
         article.append(div)
-        document.getElementById('img-' + i).style.backgroundImage = 'url(imagens/img' + i + '.jpg)'
+        document.getElementById('img-' + i).style.backgroundImage = 'url(imagens/img' + produto.link + '.jpg)'
         h3 = document.createElement('h3')
-        h3.setAttribute('id', 'nome' + i)
-        h3.innerHTML = produto[i]
+        h3.setAttribute('id', 'nome' + produto.link)
+        h3.innerHTML = produto.nome
         article.append(h3)
         p1 = document.createElement('p')
         p1.innerHTML = 'Qtd: '
@@ -115,21 +56,21 @@ function montaHTML(){ //********************************************************
         input.setAttribute('min', '1')
         input.setAttribute('max', '10')
         input.setAttribute('hidden', 'true')
-        input.setAttribute('id', 'qtd-' + i)
+        input.setAttribute('id', 'qtd-' + produto.quantidade)
         p1.append(input)
         article.append(p1)
         p2 = document.createElement('p')
         p2.innerHTML = 'R$ '
         span = document.createElement('span')
-        span.setAttribute('id', cod[i])
+        span.setAttribute('id', produto.cod)
         span.setAttribute('class', 'bold')
-        span.innerHTML = preco[i].toFixed(2).replace('.', ',')
+        span.innerHTML = produto.preco.toString().toFixed(2).replace('.', ',')
         p2.append(span)
         article.append(p2)
         aLink = document.createElement('a')
-        aLink.setAttribute('onclick', "compra(" + "'" + 'qtd-' + i + "'" + ',' + "'" + cod[i] + "'"  +  ',' + i + ")")
+        aLink.setAttribute('onclick', "compra(" + "'" + 'qtd-' + i + "'" + ',' + "'" + produto.cod + "'"  +  ',' + produto.cod + ")")
         aLink.setAttribute('class', 'btn')
-        aLink.setAttribute('href', 'http://www.amazon.com.br/' + link[i])
+        aLink.setAttribute('href', 'http://www.amazon.com.br/' + produto.link)
         aLink.setAttribute('target', '_blank')
         aLink.innerHTML = 'Comprar'
     }
@@ -162,7 +103,7 @@ function montaHTML(){ //********************************************************
 
 function atualizaBotaoLogin() {
     const botao = document.getElementById("clog");
-    const loginAut = localStorage.getItem('loginAutenticado');
+    const loginAut = localStorage.getItem('login')[0];
 
     if (loginAut && loginAut !== "null" && loginAut !== "undefined") {
         // Usuário logado
@@ -174,7 +115,7 @@ function atualizaBotaoLogin() {
 
         // Botão "Sim" do modal
         document.getElementById("btnSair").onclick = function() {
-            localStorage.removeItem('loginAutenticado');
+            localStorage.removeItem('login');
             document.getElementById("logoutModal").style.display = "none";
             botao.textContent = "Fazer login";
             botao.onclick = fazerLogin;
@@ -202,17 +143,20 @@ window.onload = function() {
 }
 //********************************************************** */
 
-function compra(qtdId, produt, posArr){
-    if(localStorage.posArr){
-        qtd[posArr] = parseInt(document.getElementById(qtdId).value)
-    }else{
-        localStorage.posArr = JSON.stringify(qtd)
-    }
-    totalCompra[posArr] = qtd[posArr] * parseFloat(document.getElementById(produt).innerText.replace(",", "."))
-    localStorage.qtdArr = JSON.stringify(qtd)
-    localStorage.totCompArr = JSON.stringify(totalCompra)
-    localStorage.setItem('produtoIndividual', produto[posArr])
-    localStorage.setItem('descricaoIndividual', descricao[posArr])
+const btnCadastrarUsuario = document.getElementById('cadastrarUsuario')
+
+function cadastrarUsuario(e) {
+    e.preventDefault()
+    nome = document.getElementById('novoUsuario').value.trim()
+    senha = document.getElementById('novaSenha').value.trim()
+    LoginController.cadastrarUsuario(nome, senha)
+    console.log('Hello, World!')
+}
+
+btnCadastrarUsuario.onclick = cadastrarUsuario;
+
+function compra(produto){
+    CarrinhoController.adicionarProdutoCarrinho(produto)
     let url_atual = window.location.href
     if(url_atual != "http://127.0.0.1:5500/produto.html" && url_atual != "http://127.0.0.1:5500/produto.html#"){
         window.location.href = "/produto.html"
@@ -221,58 +165,56 @@ function compra(qtdId, produt, posArr){
 }
 
 function abreLink(posArr){
-    localStorage.setItem('produtoIndividual', produto[posArr])
-    localStorage.setItem('descricaoIndividual', descricao[posArr])
+    salvarProdutos()
     let url_atual = window.location.href
     if(url_atual != "http://127.0.0.1:5500/produto.html" && url_atual != "http://127.0.0.1:5500/produto.html#"){
         window.location.href = "/produto.html"
     }
 }
 
-function calculaCesta(){
+function calculaCesta() {
     window.location.href = "carrinho.html"
 }
 /***************************************************************************** */
 function carregaProduto(){
-    let produtoCompra = localStorage.getItem('produtoIndividual')
-    let descCompra = localStorage.getItem('descricaoIndividual')
-    let pos = produto.indexOf(produtoCompra)
-    document.getElementById("tituloProduto").innerHTML = produtoCompra
-    document.getElementById("descProduto").innerHTML = descCompra
-    document.getElementById('imgProd').style.backgroundImage = 'url(imagens/img' + pos + '.jpg)'
-    div2 = document.createElement('div')
-    div2.setAttribute('id', 'divProd')
-    div2.setAttribute('class', 'card')
-    document.body.append(div2)
-    p1 = document.createElement('p')
-    p1.innerHTML = 'Qtd: '
-    div2.append(p1)
-    input = document.createElement('input')
-    input.setAttribute('type', 'number')
-    input.setAttribute('value', '1')
-    input.setAttribute('min', '1')
-    input.setAttribute('max', '10')
-    input.setAttribute('id', 'qtd-' + pos)
-    p1.append(input)
-    p2 = document.createElement('p')
-    p2.innerHTML = 'R$ '
-    span = document.createElement('span')
-    span.setAttribute('id', cod[pos])
-    span.setAttribute('class', 'bold')
-    span.innerHTML = preco[pos].toFixed(2).replace('.', ',')
-    p2.append(span)
-    div2.append(p2)
-    aLink = document.createElement('a')
-    aLink.setAttribute('onclick', "compra(" + "'" + 'qtd-' + pos + "'" + ',' + "'" + cod[pos] + "'"  +  ',' + pos + ")")
-    aLink.setAttribute('class', 'btn')
-    aLink.setAttribute('href', '#')
-    aLink.innerHTML = 'Comprar'
-    div2.append(aLink)
-    let logB = localStorage.getItem('loginAutenticado')
-    if(logB == "null" || logB == "undefined"){
-        document.getElementById("log").innerHTML = 'login'
-    }else{
-        document.getElementById("log").innerHTML = `Bem-vindo, ${localStorage.getItem('loginAutenticado')}`
+    for (let i = 0; i < produtos.length; i++) {
+        document.getElementById("tituloProduto").innerHTML = produtos[i].nome
+        document.getElementById("descProduto").innerHTML = produtos[i].descricao
+        document.getElementById('imgProd').style.backgroundImage = 'url(imagens/img' + i + '.jpg)'
+        div2 = document.createElement('div')
+        div2.setAttribute('id', 'divProd')
+        div2.setAttribute('class', 'card')
+        document.body.append(div2)
+        p1 = document.createElement('p')
+        p1.innerHTML = 'Qtd: '
+        div2.append(p1)
+        input = document.createElement('input')
+        input.setAttribute('type', 'number')
+        input.setAttribute('value', '1')
+        input.setAttribute('min', '1')
+        input.setAttribute('max', '10')
+        input.setAttribute('id', 'qtd-' + i)
+        p1.append(input)
+        p2 = document.createElement('p')
+        p2.innerHTML = 'R$ '
+        span = document.createElement('span')
+        span.setAttribute('id', produtos[i])
+        span.setAttribute('class', 'bold')
+        span.innerHTML = produtos[i].preco.toString().toFixed(2).replace('.', ',')
+        p2.append(span)
+        div2.append(p2)
+        aLink = document.createElement('a')
+        aLink.setAttribute('onclick', "compra(" + "'" + 'qtd-' + i + "'" + ',' + "'" + produtos[i].cod + "'"  +  ',' + i + ")")
+        aLink.setAttribute('class', 'btn')
+        aLink.setAttribute('href', '#')
+        aLink.innerHTML = 'Comprar'
+        div2.append(aLink)
+        let logB = localStorage.getItem('login').nome
+        if(logB == "null" || logB == "undefined"){
+            document.getElementById("log").innerHTML = 'login'
+        }else{
+            document.getElementById("log").innerHTML = `Bem-vindo, ${localStorage.getItem('login')[0].nome}`
+        }
     }
 }
 
