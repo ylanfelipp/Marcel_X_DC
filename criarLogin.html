@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Criar Login</title>
-    <script src="./js/models/"></script>
-    <script src="./js/views/viewLogin.js"></script>
-    <script src="./js/controllers/controllerLogin.js"></script>
+    <script src="./js/models/" type="module"></script>
+    <script src="./js/views/viewLogin.js" type="module"></script>
+    <script src="./js/controllers/LoginController.js" type="module"></script>
     <script src="./js/script.js" type="module"></script>
     <link rel="stylesheet" href="./css/criarLoginStyles.css">       
 </head>
@@ -20,7 +20,7 @@
     <h2>Criar Conta</h2>
     <input type="text" id="novoUsuario" placeholder="Usuário">
     <input type="password" id="novaSenha" placeholder="Senha">
-    <button onclick="cadastrarUsuario()">Cadastrar</button>
+    <button id="cadastrarUsuario">Cadastrar</button>
     <p id="mensagem"></p>
 </div>
 

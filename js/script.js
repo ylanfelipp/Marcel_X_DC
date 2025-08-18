@@ -143,11 +143,17 @@ window.onload = function() {
 }
 //********************************************************** */
 
-function cadastrarUsuario() {
+const btnCadastrarUsuario = document.getElementById('cadastrarUsuario')
+
+function cadastrarUsuario(e) {
+    e.preventDefault()
     nome = document.getElementById('novoUsuario').value.trim()
     senha = document.getElementById('novaSenha').value.trim()
     LoginController.cadastrarUsuario(nome, senha)
+    console.log('Hello, World!')
 }
+
+btnCadastrarUsuario.onclick = cadastrarUsuario;
 
 function compra(produto){
     CarrinhoController.adicionarProdutoCarrinho(produto)
